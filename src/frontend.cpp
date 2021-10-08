@@ -581,6 +581,8 @@ void startMultiPlayerMenu()
 
 	addTextButton(FRONTEND_HOST,     FRONTEND_POS2X, FRONTEND_POS2Y, _("Host Game"), WBUT_TXTCENTRE);
 	addTextButton(FRONTEND_JOIN,     FRONTEND_POS3X, FRONTEND_POS3Y, _("Join Game"), WBUT_TXTCENTRE);
+	addTextButton(FRONTEND_HOST, FRONTEND_POS2X, FRONTEND_POS4Y, _("Host Coop Game"), WBUT_TXTCENTRE);
+	addTextButton(FRONTEND_JOIN, FRONTEND_POS3X, FRONTEND_POS5Y, _("Join Coop Game"), WBUT_TXTCENTRE);
 	addTextButton(FRONTEND_REPLAY,   FRONTEND_POS7X, FRONTEND_POS7Y, _("View Replay"), WBUT_TXTCENTRE);
 
 	addMultiBut(psWScreen, FRONTEND_BOTFORM, FRONTEND_QUIT, 10, 10, 30, 29, P_("menu", "Return"), IMAGE_RETURN, IMAGE_RETURN_HI, IMAGE_RETURN_HI);
@@ -619,6 +621,28 @@ bool runMultiPlayerMenu()
 			changeTitleUI(std::make_shared<WzMultiplayerOptionsTitleUI>(wzTitleUICurrent));
 			break;
 		case FRONTEND_JOIN:
+			NETinit(true);
+			ingame.side = InGameSide::MULTIPLAYER_CLIENT;
+			if (getLobbyError() != ERROR_INVALID)
+			{
+				setLobbyError(ERROR_NOERROR);
+			}
+			changeTitleUI(std::make_shared<WzProtocolTitleUI>());
+			break;
+		case FRONTEND_COOP_HOST:
+			// don't pretend we are running a network game. Really do it!
+			NetPlay.bComms = true; // use network = true
+			NetPlay.isUPNP_CONFIGURED = false;
+			NetPlay.isUPNP_ERROR = false;
+			ingame.side = InGameSide::HOST_OR_SINGLEPLAYER;
+			bMultiPlayer = true;
+			bMultiMessages = true;
+			NETinit(true);
+			NETdiscoverUPnPDevices();
+			game.type = LEVEL_TYPE::SKIRMISH;		// needed?
+			changeTitleUI(std::make_shared<WzMultiplayerOptionsTitleUI>(wzTitleUICurrent));
+			break;
+		case FRONTEND_COOP_JOIN:
 			NETinit(true);
 			ingame.side = InGameSide::MULTIPLAYER_CLIENT;
 			if (getLobbyError() != ERROR_INVALID)

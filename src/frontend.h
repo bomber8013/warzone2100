@@ -239,6 +239,9 @@ enum
 	FE_MP_PR,  // Multiplayer player random button
 	FE_MP_PMAX = FE_MP_PR + MAX_PLAYERS_IN_GUI,  // Multiplayer player blah button
 
+	FRONTEND_COOP_HOST,	// coop multiplayer menu options
+	FRONTEND_COOP_JOIN,
+
 	FRONTEND_CAMPAIGN_1,
 	FRONTEND_CAMPAIGN_2,
 	FRONTEND_CAMPAIGN_3,
